@@ -42,16 +42,22 @@ class CKKSCompiler {
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
-    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
     printf("Running TypeDeducer pass.\n");
     fclose(stdout);
     programRewrite.forwardPass(TypeDeducer(program, types));
     log(Verbosity::Debug, "Running ConstantFolder pass");
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
+    printf("Running ConstantFolder pass.\n");
+    fclose(stdout);
     programRewrite.forwardPass(ConstantFolder(
         program, scales)); // currently required because executor/runtime
                            // does not handle this
     if (config.balanceReductions) {
       log(Verbosity::Debug, "Running ReductionCombiner pass");
+      freopen("output.txt", "a", stdout); // Redirect stdout to a file
+      printf("Running ReductionCombiner pass.\n");
+      fclose(stdout);
       programRewrite.forwardPass(ReductionCombiner(program));
       log(Verbosity::Debug, "Running ReductionLogExpander pass");
       programRewrite.forwardPass(ReductionLogExpander(program, types));
@@ -279,7 +285,7 @@ public:
 
   std::tuple<std::unique_ptr<Program>, CKKSParameters, CKKSSignature>
   compile(Program &inputProgram) {
-    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
     printf("Creating deep copy and compiling for CKKS.\n");
     fclose(stdout);
     auto program = inputProgram.deepCopy();
