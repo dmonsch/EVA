@@ -26,6 +26,7 @@
 #include "eva/common/type_deducer.h"
 #include "eva/util/logging.h"
 #include <cstdint>
+#include <cstdio>
 #include <seal/util/hestdparms.h>
 
 namespace eva {
@@ -39,6 +40,7 @@ class CKKSCompiler {
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
     printf("Running TypeDeducer pass");
+    fflush(stdout);
     programRewrite.forwardPass(TypeDeducer(program, types));
     log(Verbosity::Debug, "Running ConstantFolder pass");
     programRewrite.forwardPass(ConstantFolder(
