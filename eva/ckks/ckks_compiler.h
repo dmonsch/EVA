@@ -39,8 +39,9 @@ class CKKSCompiler {
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
-    printf("Running TypeDeducer pass");
-    fflush(stdout);
+    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    printf("Running TypeDeducer pass.\n");
+    fclose(stdout);
     programRewrite.forwardPass(TypeDeducer(program, types));
     log(Verbosity::Debug, "Running ConstantFolder pass");
     programRewrite.forwardPass(ConstantFolder(
