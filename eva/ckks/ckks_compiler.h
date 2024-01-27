@@ -279,6 +279,9 @@ public:
 
   std::tuple<std::unique_ptr<Program>, CKKSParameters, CKKSSignature>
   compile(Program &inputProgram) {
+    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    printf("Creating deep copy and compiling for CKKS.\n");
+    fclose(stdout);
     auto program = inputProgram.deepCopy();
 
     log(Verbosity::Info, "Compiling %s for CKKS with:\n%s",
