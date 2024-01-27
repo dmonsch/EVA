@@ -36,6 +36,9 @@ class CKKSCompiler {
 
   void transform(Program &program, TermMap<Type> &types,
                  TermMapOptional<std::uint32_t> &scales) {
+    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    printf("Starting program traversal.\n");
+    fclose(stdout);
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
