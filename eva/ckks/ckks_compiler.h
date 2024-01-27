@@ -36,7 +36,7 @@ class CKKSCompiler {
 
   void transform(Program &program, TermMap<Type> &types,
                  TermMapOptional<std::uint32_t> &scales) {
-    freopen("output.txt", "w", stdout); // Redirect stdout to a file
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
     printf("Starting program traversal.\n");
     fclose(stdout);
     auto programRewrite = ProgramTraversal(program);
@@ -62,6 +62,10 @@ class CKKSCompiler {
       log(Verbosity::Debug, "Running ReductionLogExpander pass");
       programRewrite.forwardPass(ReductionLogExpander(program, types));
     }
+
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
+    printf("Running Rescaler pass.\n");
+    fclose(stdout);
     switch (config.rescaler) {
     case CKKSRescaler::Minimum:
       log(Verbosity::Debug, "Running MinimumRescaler pass");
@@ -83,6 +87,10 @@ class CKKSCompiler {
     default:
       throw std::logic_error("Unhandled rescaler in CKKSCompiler.");
     }
+
+    freopen("output.txt", "a", stdout); // Redirect stdout to a file
+    printf("Running TypeDeducer pass.\n");
+    fclose(stdout);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
 
