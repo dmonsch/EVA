@@ -49,7 +49,7 @@ EVA_TYPES
       for (auto& entry : terms) {
         entry->set<EncodeAtScaleAttribute>(scale);
       }
-    }
+    })
     .def("set_output_ranges", [](const Program& prog, uint32_t range) {
       for (auto& entry : prog.getOutputs()) {
         entry.second->set<RangeAttribute>(range);
