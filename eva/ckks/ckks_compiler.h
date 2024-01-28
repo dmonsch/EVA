@@ -43,14 +43,14 @@ class CKKSCompiler {
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
     fclose(stdout);
     
     programRewrite.forwardPass(TypeDeducer(program, types));
     
     log(Verbosity::Debug, "Running ConstantFolder pass");
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running ConstantFolder pass.\n");
     fclose(stdout);
   
@@ -60,7 +60,7 @@ class CKKSCompiler {
     
     if (config.balanceReductions) {
       log(Verbosity::Debug, "Running ReductionCombiner pass");
-      FILE *file = fopen("output.txt", "a");
+      file = fopen("output.txt", "a");
       fprintf(file, "Running ReductionCombiner pass.\n");
       fclose(stdout);
       
@@ -69,7 +69,7 @@ class CKKSCompiler {
       programRewrite.forwardPass(ReductionLogExpander(program, types));
     }
 
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running Rescaler pass.\n");
     fclose(stdout);
     switch (config.rescaler) {
@@ -94,20 +94,20 @@ class CKKSCompiler {
       throw std::logic_error("Unhandled rescaler in CKKSCompiler.");
     }
 
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
     fclose(stdout);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
 
     log(Verbosity::Debug, "Running EncodeInserter pass");
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running EncodeInserter pass.\n");
     fclose(stdout);
     programRewrite.forwardPass(EncodeInserter(program, types, scales));
     
     log(Verbosity::Debug, "Running TypeDeducer pass");
-    FILE *file = fopen("output.txt", "a");
+    file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
     fclose(stdout);
     programRewrite.forwardPass(TypeDeducer(program, types));
