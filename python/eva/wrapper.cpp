@@ -45,6 +45,11 @@ EVA_TYPES
     .def_property_readonly("vec_size", &Program::getVecSize, "The number of elements for all vectors in this program")
     .def_property_readonly("inputs", &Program::getInputs, py::keep_alive<0,1>(), "A dictionary from input names to terms")
     .def_property_readonly("outputs", &Program::getOutputs, py::keep_alive<0,1>(), "A dictionary from output names to terms")
+    .def("set_scales", [](const Program& prog, vector<Term::Ptr> terms, uint32_t scale) {
+      for (auto& entry : terms) {
+        entry.second->set<EncodeAtScaleAttribute>(scale);
+      }
+    }, R"DELIMITER(Sets the scale for all given terms. Should be executed after setting the input scales, otherwise this will be overridden.)DELIMITER",
     .def("set_output_ranges", [](const Program& prog, uint32_t range) {
       for (auto& entry : prog.getOutputs()) {
         entry.second->set<RangeAttribute>(range);
