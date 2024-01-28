@@ -36,35 +36,41 @@ class CKKSCompiler {
 
   void transform(Program &program, TermMap<Type> &types,
                  TermMapOptional<std::uint32_t> &scales) {
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Starting program traversal.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Starting program traversal.\n");
     fclose(stdout);
+    
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Running TypeDeducer pass.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running TypeDeducer pass.\n");
     fclose(stdout);
+    
     programRewrite.forwardPass(TypeDeducer(program, types));
+    
     log(Verbosity::Debug, "Running ConstantFolder pass");
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Running ConstantFolder pass.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running ConstantFolder pass.\n");
     fclose(stdout);
+  
     programRewrite.forwardPass(ConstantFolder(
         program, scales)); // currently required because executor/runtime
                            // does not handle this
+    
     if (config.balanceReductions) {
       log(Verbosity::Debug, "Running ReductionCombiner pass");
-      freopen("output.txt", "a", stdout); // Redirect stdout to a file
-      printf("Running ReductionCombiner pass.\n");
+      FILE *file = fopen("output.txt", "a");
+      fprintf(file, "Running ReductionCombiner pass.\n");
       fclose(stdout);
+      
       programRewrite.forwardPass(ReductionCombiner(program));
       log(Verbosity::Debug, "Running ReductionLogExpander pass");
       programRewrite.forwardPass(ReductionLogExpander(program, types));
     }
 
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Running Rescaler pass.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running Rescaler pass.\n");
     fclose(stdout);
     switch (config.rescaler) {
     case CKKSRescaler::Minimum:
@@ -88,15 +94,22 @@ class CKKSCompiler {
       throw std::logic_error("Unhandled rescaler in CKKSCompiler.");
     }
 
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Running TypeDeducer pass.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running TypeDeducer pass.\n");
     fclose(stdout);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
 
     log(Verbosity::Debug, "Running EncodeInserter pass");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running EncodeInserter pass.\n");
+    fclose(stdout);
     programRewrite.forwardPass(EncodeInserter(program, types, scales));
+    
     log(Verbosity::Debug, "Running TypeDeducer pass");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Running TypeDeducer pass.\n");
+    fclose(stdout);
     programRewrite.forwardPass(TypeDeducer(program, types));
     // TODO: rerunning the type deducer at every step is wasteful, but also
     // forcing other passes to always keep type information up to date isn't
@@ -293,8 +306,8 @@ public:
 
   std::tuple<std::unique_ptr<Program>, CKKSParameters, CKKSSignature>
   compile(Program &inputProgram) {
-    freopen("output.txt", "a", stdout); // Redirect stdout to a file
-    printf("Creating deep copy and compiling for CKKS.\n");
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "Creating deep copy and compiling for CKKS.\n");
     fclose(stdout);
     auto program = inputProgram.deepCopy();
 
