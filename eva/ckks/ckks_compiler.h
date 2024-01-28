@@ -38,21 +38,21 @@ class CKKSCompiler {
                  TermMapOptional<std::uint32_t> &scales) {
     FILE *file = fopen("output.txt", "a");
     fprintf(file, "Starting program traversal.\n");
-    fclose(stdout);
+    fclose(file);
     
     auto programRewrite = ProgramTraversal(program);
 
     log(Verbosity::Debug, "Running TypeDeducer pass");
     file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
-    fclose(stdout);
+    fclose(file);
     
     programRewrite.forwardPass(TypeDeducer(program, types));
     
     log(Verbosity::Debug, "Running ConstantFolder pass");
     file = fopen("output.txt", "a");
     fprintf(file, "Running ConstantFolder pass.\n");
-    fclose(stdout);
+    fclose(file);
   
     programRewrite.forwardPass(ConstantFolder(
         program, scales)); // currently required because executor/runtime
@@ -62,7 +62,7 @@ class CKKSCompiler {
       log(Verbosity::Debug, "Running ReductionCombiner pass");
       file = fopen("output.txt", "a");
       fprintf(file, "Running ReductionCombiner pass.\n");
-      fclose(stdout);
+      fclose(file);
       
       programRewrite.forwardPass(ReductionCombiner(program));
       log(Verbosity::Debug, "Running ReductionLogExpander pass");
@@ -71,7 +71,7 @@ class CKKSCompiler {
 
     file = fopen("output.txt", "a");
     fprintf(file, "Running Rescaler pass.\n");
-    fclose(stdout);
+    fclose(file);
     switch (config.rescaler) {
     case CKKSRescaler::Minimum:
       log(Verbosity::Debug, "Running MinimumRescaler pass");
@@ -96,20 +96,20 @@ class CKKSCompiler {
 
     file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
-    fclose(stdout);
+    fclose(file);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
 
     log(Verbosity::Debug, "Running EncodeInserter pass");
     file = fopen("output.txt", "a");
     fprintf(file, "Running EncodeInserter pass.\n");
-    fclose(stdout);
+    fclose(file);
     programRewrite.forwardPass(EncodeInserter(program, types, scales));
     
     log(Verbosity::Debug, "Running TypeDeducer pass");
     file = fopen("output.txt", "a");
     fprintf(file, "Running TypeDeducer pass.\n");
-    fclose(stdout);
+    fclose(file);
     programRewrite.forwardPass(TypeDeducer(program, types));
     // TODO: rerunning the type deducer at every step is wasteful, but also
     // forcing other passes to always keep type information up to date isn't
@@ -308,7 +308,7 @@ public:
   compile(Program &inputProgram) {
     FILE *file = fopen("output.txt", "a");
     fprintf(file, "Creating deep copy and compiling for CKKS.\n");
-    fclose(stdout);
+    fclose(file);
     auto program = inputProgram.deepCopy();
 
     log(Verbosity::Info, "Compiling %s for CKKS with:\n%s",
