@@ -326,7 +326,7 @@ public:
   std::tuple<std::unique_ptr<Program>, CKKSParameters, CKKSSignature>
   compile(Program &inputProgram) {
     FILE *file = fopen("output.txt", "a");
-    fprintf(file, "Creating deep copy and compiling for CKKS.\n");
+    fprintf(file, "1. Creating deep copy and compiling for CKKS.\n");
     fclose(file);
     auto program = inputProgram.deepCopy();
 
@@ -351,12 +351,30 @@ public:
     }
 
     CKKSParameters encParams;
+
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "2. Transform program.\n");
+    fclose(file);
     transform(*program, types, scales);
+
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "3. Validate program.\n");
+    fclose(file);
     validate(*program, types, scales);
+
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "4. Determine encryption parameters.\n");
+    fclose(file);
     determineEncryptionParameters(*program, encParams, scales, types);
 
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "5. Extract signature.\n");
+    fclose(file);
     auto signature = extractSignature(*program);
 
+    FILE *file = fopen("output.txt", "a");
+    fprintf(file, "6. Finish and return.\n");
+    fclose(file);
     return std::make_tuple(std::move(program), std::move(encParams),
                            std::move(signature));
   }
