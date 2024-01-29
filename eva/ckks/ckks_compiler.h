@@ -115,6 +115,9 @@ class CKKSCompiler {
     // forcing other passes to always keep type information up to date isn't
     // something they should need to do. Type deduction should be changed
     // into a thing that is done as needed locally.
+    file = fopen("output.txt", "a");
+    fprintf(file, "Running Relinearizer pass.\n");
+    fclose(file);
     if (config.lazyRelinearize) {
       log(Verbosity::Debug, "Running LazyRelinearizer pass");
       programRewrite.forwardPass(LazyRelinearizer(program, types, scales));
@@ -122,12 +125,28 @@ class CKKSCompiler {
       log(Verbosity::Debug, "Running EagerRelinearizer pass");
       programRewrite.forwardPass(EagerRelinearizer(program, types, scales));
     }
+
+    file = fopen("output.txt", "a");
+    fprintf(file, "Running TypeDeducer pass.\n");
+    fclose(file);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
+
+    file = fopen("output.txt", "a");
+    fprintf(file, "Running ModSwitcher pass.\n");
+    fclose(file);
     log(Verbosity::Debug, "Running ModSwitcher pass");
     programRewrite.backwardPass(ModSwitcher(program, types, scales));
+
+    file = fopen("output.txt", "a");
+    fprintf(file, "Running TypeDeducer pass.\n");
+    fclose(file);
     log(Verbosity::Debug, "Running TypeDeducer pass");
     programRewrite.forwardPass(TypeDeducer(program, types));
+
+    file = fopen("output.txt", "a");
+    fprintf(file, "Running SEALLowering pass.\n");
+    fclose(file);
     log(Verbosity::Debug, "Running SEALLowering pass");
     programRewrite.forwardPass(SEALLowering(program, types));
   }
